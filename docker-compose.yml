@@ -1,0 +1,9 @@
+version: '3.4'
+
+services:
+  gameoflife:
+    image: ${DOCKER_REGISTRY-}gameoflife
+    build:
+      context: .
+      dockerfile: GameOfLife/Dockerfile
+    restart: on-failure
