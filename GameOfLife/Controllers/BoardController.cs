@@ -1,4 +1,5 @@
 ﻿using GameOfLife.Models;
+using GameOfLife.Orchestrators;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -11,15 +12,24 @@ namespace GameOfLife.Controllers
     [Route("[controller]")]
     public class BoardController : Controller
     {
+        BoardOrchestrator boardOrchestrator = new BoardOrchestrator(3,3);
         // GET: BoardController
-        [HttpGet(Name = "GetBoard")]
-        public string GetBoard()
+        //[HttpGet]
+        //public string GetBoard()
+        //{
+        //    return JsonConvert.SerializeObject(boardOrchestrator.CurrentBoard);
+        //    //Board board = new Board(3, 3);
+        //    //board.InitRandomBoard();
+        //    //board.EvaluateBoard();
+        //    //var t = JsonConvert.SerializeObject(board);
+        //    //return t;
+        //}
+
+
+        [HttpGet]      
+        public string GetBoardState(int index)
         {
-            Board board = new Board(3, 3);
-            board.InitRandomBoard();
-            board.EvaluateBoard();
-            var t = JsonConvert.SerializeObject(board);
-            return t;
+            return JsonConvert.SerializeObject(boardOrchestrator.GetState(index));            
         }
 
         [HttpPost(Name = "PostBoard")]
@@ -27,12 +37,21 @@ namespace GameOfLife.Controllers
         {
  
             Board postedBoard = JsonConvert.DeserializeObject<Board>(board);
-            postedBoard.EvaluateBoard();
-            var t = JsonConvert.SerializeObject(board);
+            boardOrchestrator.CurrentBoard=postedBoard;
+            boardOrchestrator.Evaluate();
+            var t = JsonConvert.SerializeObject(boardOrchestrator.CurrentBoard);
             return t;
         }
 
+        //[HttpGet(Name = "Evaluate")]
+        //public string Evaluate()
+        //{
+        //    boardOrchestrator.Evaluate();
+        //     var t = JsonConvert.SerializeObject(boardOrchestrator.CurrentBoard);
+        //    return t;
+        //}
 
-       
+
+
     }
 }
